@@ -1,38 +1,63 @@
-.App {
-  text-align: center;
-}
+@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@700&family=Lora:wght@400;500&display=swap');
+@tailwind base;
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
+@tailwind utilities;
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+@layer components {
+  .standard-input {
+    @apply block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300  rounded
+        focus:border-blue-500 focus:outline-none focus:ring;
+  }
+  .primary-btn {
+    @apply px-4 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-200 transform bg-blue-600 rounded  hover:bg-blue-500 focus:outline-none focus:bg-blue-500;
+  }
+
+  .danger-btn {
+    @apply px-4 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-200 
+    transform bg-red-600 rounded  hover:bg-red-700 focus:outline-none focus:bg-red-500;
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+* {
+  font-family: "Heebo", sans-serif;
 }
 
-.App-link {
-  color: #61dafb;
+.ellipsis {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.animateUnderline {
+  /* I don't know why this is needed, I just added it and it worked in IE Edge. If we remove this width, the gradient breaks in IE Edge */
+  width: calc(100%);
+  background-image: linear-gradient(
+    transparent calc(100% - 10px),
+    rgb(3, 42, 92) 10px
+  );
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  transition: background-size 0.5s;
+}
+
+.animateUnderline:hover {
+  background-size: 100% 100%;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+  background-color: rgb(86, 176, 236);
 }

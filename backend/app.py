@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS, cross_origin
 from flask_sqlalchemy import SQLAlchemy
 import redis
 import json
@@ -7,7 +8,9 @@ from collections import Counter
 from utils import *
 
 app = Flask(__name__)
+cors = CORS(app)
 app.config.from_pyfile('config.py')
+app.config['CORS_HEADERS'] = 'Content-Type'
 redis_instance = redis.Redis(host='localhost', port=6379)
 db = SQLAlchemy(app)
 
@@ -35,7 +38,7 @@ def add_row_to_database(row, enableRedisCache):
         (output4, time4) = elapsed_time(lambda :redis_instance.sadd('users', userid))
         redis_insertion_time["users_time"] += time4
 
-        redis_insertion_time["total_time_taken"] = (time2 + time3 + time4)
+        redis_insertion_time["total_time_taken"] = round(time2 + time3 + time4, 6)
 
     db.session.commit()
     return (postgres_insertion_time, redis_insertion_time)
@@ -54,7 +57,7 @@ def insert_tweet():
     (postgres_time, redis_time) = add_row_to_database(row, True)
     return jsonify({"status": "success", "postgres_time": postgres_time, "redis_time": redis_time})
 
-@app.route('/insert_row_range', methods=['POST'])
+@app.route('/insert_range', methods=['POST'])
 def insertRowsOfRange():
     """
         Inserts tweets of given range. With optional storage to redis cache after insertion to postgres database
@@ -83,8 +86,9 @@ def insertRowsOfRange():
             redis_insertion_time["user_tweets"] += redis_time["user_tweets"]
         idx += 1
     input_file.close()
+    postgres_insertion_time["total_time_taken"] += round(postgres_time["total_time_taken"], 6)
     return jsonify({'status': 'success', 'message': f"Number of rows Inserted = {idx}", 
-    "postgres_time": postgres_insertion_time, "redis_insertion_time": redis_time})
+    "postgres_time": postgres_insertion_time, "redis_time": redis_time})
 
 # ------------------- Read Queries ---------------------
 
