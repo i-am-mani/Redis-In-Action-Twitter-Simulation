@@ -11,8 +11,6 @@ export const Actions: React.FC = () => {
   const { setTweets } = React.useContext(TweetContext);
   const [isLoading, setLoading] = React.useState(false);
 
-  const fetchUseridTweets = () => {};
-
   const fetchAll = async (fromCache: boolean = false) => {
     try {
       addLogs([
@@ -74,6 +72,34 @@ export const Actions: React.FC = () => {
     }
   };
 
+  const queryUserTweets = async (fromCache: boolean = false) => {
+    try {
+      addLogs([
+        `Fetch Request Initiated - ${fromCache ? "Redis" : "Postgres"}`,
+      ]);
+      setLoading(true);
+      const response = await axios.post(`${REMOTE_HOST}/fetch_userid_tweets`, {
+        cacheEnabled: fromCache,
+        userid, 
+      });
+      setLoading(false);
+      console.log(response);
+      const status = response.data["status"];
+      if (status === "success") {
+        const tweets = response.data["tweets"];
+        const log = response.data["logs"];
+        addLogs(log);
+        setTweets(tweets);
+      }
+      toast(
+        `Retreived all the user tweets from ${fromCache ? "Redis" : "Postgres"}`
+      );
+    } catch (e) {
+      console.log(e);
+      toast.error("Failed to fetch tweets");
+    }
+  };
+
   return (
     <div className="my-4 grid grid-cols-12 gap-3 text-dark">
       <div className="col-span-3 p-3 shadow-lg space-y-3 rounded-lg">
@@ -88,9 +114,25 @@ export const Actions: React.FC = () => {
           onChange={(e) => setUserid(e.target.value)}
         />
 
-        <button className="primary-btn" onClick={() => {}}>
-          Search
-        </button>
+        <div className="flex justify-between space-x-3">
+          <button
+            className="primary-btn"
+            onClick={() => {
+              queryUserTweets(false);
+            }}
+          >
+            Database
+          </button>
+
+          <button
+            className="primary-btn"
+            onClick={() => {
+              queryUserTweets(true);
+            }}
+          >
+            Cache
+          </button>
+        </div>
       </div>
 
       <div className="col-span-3 p-3 shadow-lg space-y-3 rounded-lg">

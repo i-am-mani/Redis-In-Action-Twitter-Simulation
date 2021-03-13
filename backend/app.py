@@ -13,7 +13,10 @@ app.config.from_pyfile('config.py')
 app.config['CORS_HEADERS'] = 'Content-Type'
 redis_instance = redis.Redis(host='localhost', port=6379)
 db = SQLAlchemy(app)
-from models import *
+try:
+    from models import *
+except:
+    print('failed to import module')
 # to prevent circular import
 
 
@@ -160,8 +163,47 @@ def fetch_all_uids():
         all_userids = [r[0] for r in result]
     db = "Postgres" if not is_cache_first else "Redis"
     log.append(f"Succesfully Fetched All Users From {db} {execution_time}")
-    return {"status": 'success', "tweets": userIds, "log": log}
+    return {"status": 'success', "tweets": userIds, "logs": log}
 
+
+@app.route('/fetch_userid_tweets', methods=["POST"])
+def fetch_get_uid():
+    userid = request.get_json()["userid"]
+    is_cache_first = request.get_json()["cacheEnabled"]
+    all_tweets = []
+    execution_time = 0
+    log = []
+    if(is_cache_first):
+        all_tweets = []
+        (result, execution_time) = elapsed_time(
+            lambda: redis_instance.lrange(f"user:{userid}:tweets", 0, -1))
+        print('from cache')
+        print(result)
+        counter = 0
+        for r in result:
+            dictionary_result = json.loads(r)
+            all_tweets.append(dictionary_result)
+            counter += 1
+            if(counter > 10):
+                break
+        log.append(
+            f"Redis | Fetched All Tweets For Userid in {execution_time}ms")
+    else:
+        (result, execution_time) = elapsed_time(
+            lambda: Tweet.query.filter_by(userid = userid).all())
+        idx = 0
+        for tweet in result:
+            all_tweets.append(tweet.to_dict())
+            if(idx > 10):
+                break
+            idx += 1
+        log.append(
+            f"Postgres | Fetched All Tweets For Userid in {execution_time}ms")
+
+    return {"status": "success", "tweets": all_tweets, "logs": log}
+
+
+# ------------ Update Queries ------------
 
 @app.route('/update_tweet', methods=["POST"])
 def update_tweet():
@@ -172,13 +214,16 @@ def update_tweet():
     print(out)
     return {"status": 'success', "log": ["Tweet updated successfully"]}
 
+# ------------- Delete Queries ------------------
+
 
 @app.route('/delete_tweet', methods=['POST'])
 def delete_tweet():
     row = request.get_json()
     tweet_object = get_tweet_object_from_dict(row)
     print(tweet_object.tweetid)
-    out = db.session.query(Tweet).filter(Tweet.tweetid == tweet_object.tweetid).delete()    
+    out = db.session.query(Tweet).filter(
+        Tweet.tweetid == tweet_object.tweetid).delete()
     db.session.commit()
     print(out)
     return {"status": 'success', "log": ["Tweet Deleted Successfully"]}
