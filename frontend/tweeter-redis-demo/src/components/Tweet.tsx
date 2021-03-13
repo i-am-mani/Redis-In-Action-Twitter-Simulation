@@ -5,7 +5,7 @@ export const TweetView: React.FC<{
   tweet: Tweet;
   onUpdate: (tweet: Tweet) => void;
   onDelete: () => void;
-}> = ({ tweet }) => {
+}> = ({ tweet, onUpdate, onDelete }) => {
   const {
     isreshare,
     lang,
@@ -18,6 +18,9 @@ export const TweetView: React.FC<{
     userid,
     weekday,
   } = tweet;
+  const [isUpdateMode, setUpdateMode] = React.useState(false);
+  const [tweetContent, setTweetContent] = React.useState(text);
+
   const colors = ["red", "yellow", "green", "pink", "indigo"];
   let i = Math.floor(Math.random() * 1000) % 5;
   return (
@@ -29,7 +32,17 @@ export const TweetView: React.FC<{
           <p className="font-lora font-bold text-wider">{tweetid}</p>
         </div>
 
-        <div className="break-all">{text}</div>
+        {isUpdateMode ? (
+          <textarea
+            value={tweetContent}
+            onChange={(e) => setTweetContent(e.target.value)}
+            className="standard-input"
+            maxLength={255}
+            rows={4}
+          />
+        ) : (
+          <div className="break-all">{tweetContent}</div>
+        )}
 
         <div className="flex justify-between">
           <p className="font-bold">Reach: {reach}</p>
@@ -38,8 +51,22 @@ export const TweetView: React.FC<{
         </div>
 
         <div className="flex space-x-3">
-          <button className="primary-btn">Update</button>
-          <button className="danger-btn">Delete</button>
+          <button
+            className="primary-btn"
+            onClick={() => {
+              if (isUpdateMode) {
+                onUpdate({ ...tweet, text: tweetContent });
+                setUpdateMode(!isUpdateMode);
+              } else {
+                setUpdateMode(!isUpdateMode);
+              }
+            }}
+          >
+            {isUpdateMode ? "Confirm" : "Update"}
+          </button>
+          <button className="danger-btn" onClick={() => onDelete()}>
+            Delete
+          </button>
         </div>
       </div>
     </div>

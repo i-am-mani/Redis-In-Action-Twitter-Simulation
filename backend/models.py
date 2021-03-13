@@ -33,6 +33,7 @@ class Tweet(db.Model):
 
     def to_dict(self):
         return {
+            "id": self.id,
             "tweetid": self.tweetid,
             "weekday": self.weekday,
             "isreshare": self.isreshare,

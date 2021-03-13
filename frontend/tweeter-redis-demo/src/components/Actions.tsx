@@ -20,7 +20,7 @@ export const Actions: React.FC = () => {
       ]);
       setLoading(true);
       const response = await axios.post(`${REMOTE_HOST}/fetch_all_tweets`, {
-        cacheEnabled: true,
+        cacheEnabled: fromCache,
       });
       setLoading(false);
       console.log(response);
