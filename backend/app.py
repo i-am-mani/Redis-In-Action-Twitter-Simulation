@@ -125,7 +125,7 @@ def fetch_all_tweets():
             break
         idx += 1
     log.append(f"Operation Completed in {execution_time} ms")
-    return {"status": 'Success', "tweets": tweets, "log": log}
+    return {"status": 'success', "tweets": tweets, "logs": log}
 
 
 @app.route('/fetch_all_uids', methods=["POST"])
@@ -149,14 +149,14 @@ def fetch_all_uids():
         all_userids = [r[0] for r in result]
     db = "Postgres" if not is_cache_first else "Redis"
     log.append(f"Succesfully Fetched All Users From {db} {execution_time}")
-    return {"status": 'Success', "tweets": userIds, "log": log}
+    return {"status": 'success', "tweets": userIds, "log": log}
 
 
 @app.route('/delete_cache', methods=['POST'])
 def clear_cache():
     try:
         redis_instance.delete('all_tweets')
-        return jsonify({"status": 'Success'})
+        return jsonify({"status": 'success'})
     except Exception:
         return jsonify({"status": 'Failed', "reason": Exception})
 
@@ -166,7 +166,7 @@ def clear_database():
         Tweet.query.delete()
         redis_instance.delete('all_tweets')
         db.session.commit()
-        return jsonify({"status": 'Success'})
+        return jsonify({"status": 'success'})
     except Exception:
         return jsonify({"status": 'Failed', "reason": Exception})
 

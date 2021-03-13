@@ -6,6 +6,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { ConsoleContextProvider } from "./context/ConsoleContext";
 import { Console } from "./components/Console";
 import { TweetContextProvider } from "./context/TweetsContext";
+import { Actions } from "./components/Actions";
+import { DisplayTweets } from "./components/DisplayTweets";
 
 export const REMOTE_HOST = "http://127.0.0.1:5000";
 
@@ -22,58 +24,9 @@ function App() {
           <main className="ml-7/12 p-6">
             <header>
               <AddTweetSection />
-
-              <div className="my-4 grid grid-cols-12 gap-2 text-dark">
-                <div className="col-span-3 p-3 shadow-lg space-y-3">
-                  <p className="font-bold font-lora tracking-wide text-center">
-                    User Tweets
-                  </p>
-
-                  <input
-                    placeholder="Enter UserId"
-                    className="standard-input"
-                  />
-
-                  <button className="primary-btn">Search</button>
-                </div>
-
-                <div className="col-span-3 p-3 shadow-lg space-y-3">
-                  <p className="font-bold font-lora tracking-wide text-center">
-                    Delete
-                  </p>
-
-                  <div className="h-3/5 grid grid-cols-2 gap-3">
-                    <div className="shadow-md rounded-md text-center p-2 cursor-pointer">
-                      Database
-                    </div>
-                    <div className="shadow-md rounded-md text-center p-2 cursor-pointer">
-                      Cache
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-span-3 p-3 shadow-lg space-y-3">
-                  <p className="font-bold font-lora tracking-wide text-center">
-                    Fetch All Tweets
-                  </p>
-
-                  <div className="h-3/5 grid grid-cols-2 gap-3">
-                    <div className="shadow-md rounded-md text-center p-2 cursor-pointer">
-                      Database
-                    </div>
-                    <div className="shadow-md rounded-md text-center p-2 cursor-pointer">
-                      Cache
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex justify-center items-center col-span-3 p-3 shadow-lg space-y-3">
-                  <p className="font-bold font-lora tracking-wide cursor-pointer">
-                    Compute States
-                  </p>
-                </div>
-              </div>
+              <Actions />
             </header>
+            <DisplayTweets />
           </main>
         </div>
       </ConsoleContextProvider>
