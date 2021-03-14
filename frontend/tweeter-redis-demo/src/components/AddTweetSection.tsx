@@ -46,9 +46,9 @@ export const AddTweetSection: React.FC = () => {
   const [tweet, updateTweet] = React.useState<Tweet>(getEmptyTweet());
   const [startIdx, setStartIdx] = React.useState(0);
   const [endIdx, setEndIdx] = React.useState(0);
+  const [isLoading, setIsLoading] = React.useState(false);
   const { addLogs } = React.useContext(ConsoleContext);
   const insertTweet = () => {
-    console.log(`${REMOTE_HOST}/insert_tweet`);
     axios
       .post(`${REMOTE_HOST}/insert_tweet`, { ...tweet })
       .then((response: any) => {
@@ -75,11 +75,14 @@ export const AddTweetSection: React.FC = () => {
 
   const insertTweetsOfRange = async () => {
     try {
+      addLogs([`Inserting ${endIdx - startIdx} Tweets`]);
+      setIsLoading(true);
       const response = await axios.post(`${REMOTE_HOST}/insert_range`, {
         range_start: startIdx,
         range_end: endIdx,
         cache: true,
       });
+      setIsLoading(false);
       console.log(response);
       const status = response.data["status"];
       if (status === "success") {
@@ -91,7 +94,7 @@ export const AddTweetSection: React.FC = () => {
         toast("Successfully Uploaded All Tweets of Given Range");
       }
       updateTweet(getEmptyTweet());
-    } catch(e) {
+    } catch (e) {
       console.log(e);
       toast.error("Failed To Upload Range");
     }
@@ -99,16 +102,21 @@ export const AddTweetSection: React.FC = () => {
 
   return (
     <div className="w-full shadow-lg p-6 rounded-xl text-dark">
-      <p className="relative text-2xl text-center font-lora font-bold ">
-        Add Tweet
+      <div className="flex justify-center">
+        {isLoading ? <div className="spinner" /> : ""}
+        <div className="w-full felx-grow inline-flex">
+          <p className="m-auto relative text-2xl text-center font-lora font-bold ">
+            Add Tweet
+          </p>
+        </div>
         <span
-          className="absolute top-4 right-4 font-mono tracking-wide 
+          className="font-mono tracking-wide 
         text-blue-500 text-sm cursor-pointer"
           onClick={() => updateHide(!hide)}
         >
           [hide]
         </span>
-      </p>
+      </div>
       {hide ? (
         <>
           <div className="grid grid-cols-12 p-4 gap-4">

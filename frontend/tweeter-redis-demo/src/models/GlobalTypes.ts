@@ -28,3 +28,10 @@ export type ConsoleContextType = {
   addLogs: (msg: string[]) => void;
   clearLogs: () => void;
 };
+
+export type Statistics = {
+  highest_retweet: number;
+  total_retweets: number;
+  total_likes: number;
+  total_reach: number;  
+}

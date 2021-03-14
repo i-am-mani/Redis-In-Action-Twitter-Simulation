@@ -19,6 +19,17 @@ except:
     print('failed to import module')
 # to prevent circular import
 
+"""
+Keys in Redis:
+
+all_tweets: List of json
+user: <userid>:tweets : List of json
+users: List of userids
+statistics: hash {total_retweets, total_like, total_reach, highest_retweets}
+
+Model of Tweet, represents the table in Postgres
+"""
+
 
 def add_row_to_database(row, enableRedisCache):
     postgres_insertion_time = {"total_time_taken": 0}
@@ -190,7 +201,7 @@ def fetch_get_uid():
             f"Redis | Fetched All Tweets For Userid in {execution_time}ms")
     else:
         (result, execution_time) = elapsed_time(
-            lambda: Tweet.query.filter_by(userid = userid).all())
+            lambda: Tweet.query.filter_by(userid=userid).all())
         idx = 0
         for tweet in result:
             all_tweets.append(tweet.to_dict())
@@ -203,7 +214,42 @@ def fetch_get_uid():
     return {"status": "success", "tweets": all_tweets, "logs": log}
 
 
+@app.route('/compute_statistics', methods=["POST"])
+def compute_statistics():
+    start = time.perf_counter()
+    log = []
+    statistics = {"total_retweets": 0, "total_likes": 0,
+                  "total_reach": 0, "highest_retweet": 0}
+    is_cache_first = request.get_json()["cacheEnabled"]
+    if(is_cache_first):
+        result, redis_time = elapsed_time(
+            lambda: redis_instance.hgetall("statistics"))
+        statistics = {key.decode('utf-8'): value.decode('utf-8')
+                      for (key, value) in result.items()}
+        log.append(f"Redis | Fetched Statistics In {redis_time}ms")
+    else:
+        (result, execution_time) = elapsed_time(
+            lambda: Tweet.query.all())
+        idx = 0
+        for tweet in result:
+            statistics["highest_retweet"] = max(
+                statistics["highest_retweet"], int(tweet.retweetcount))
+            statistics["total_retweets"] += int(tweet.retweetcount)
+            statistics["total_likes"] += int(tweet.likes)
+            statistics["total_reach"] += int(tweet.reach)
+
+        log.append(
+            f"Postgres | Fetched All Tweets in {execution_time}ms")
+        (result, redis_time) = elapsed_time(
+            lambda: redis_instance.hmset(name="statistics", mapping=statistics))
+        log.append(f"Redis | Caches Statistics in {redis_time}")
+    end = time.perf_counter()
+    log.append(
+        f"Calculating Statistics Completed in {round((end-start) * 1000, 6)}ms")
+
+    return {"status": "success", "logs": log, "statistics": statistics}
 # ------------ Update Queries ------------
+
 
 @app.route('/update_tweet', methods=["POST"])
 def update_tweet():
@@ -232,8 +278,7 @@ def delete_tweet():
 @app.route('/delete_cache', methods=['POST'])
 def clear_cache():
     try:
-        redis_instance.delete('all_tweets')
-        return jsonify({"status": 'success'})
+        return {"status": "success", "logs": [clear_all_keys_redis()]}
     except Exception:
         return jsonify({"status": 'Failed', "reason": Exception})
 
@@ -241,12 +286,26 @@ def clear_cache():
 @app.route('/delete_database', methods=['POST'])
 def clear_database():
     try:
-        Tweet.query.delete()
-        redis_instance.delete('all_tweets')
+        log = []
+        redis_clear = clear_all_keys_redis()
+        log.append(redis_clear)
+
+        _, time = elapsed_time(lambda : Tweet.query.delete())        
         db.session.commit()
-        return jsonify({"status": 'success'})
+
+        log.append(f"Postgres | Dropped All Tweets In {time}ms")
+        return jsonify({"status": 'success', "logs": log})
     except Exception:
         return jsonify({"status": 'Failed', "reason": Exception})
+
+
+def clear_all_keys_redis():
+    _, time1 = elapsed_time(lambda: redis_instance.delete('all_tweets'))
+    _, time2 = elapsed_time(lambda: redis_instance.delete('users'))
+    _, time3 = elapsed_time(lambda: redis_instance.delete('user_tweets'))
+    _, time4 = elapsed_time(lambda: redis_instance.delete('statistics'))
+    total = time1 + time2 + time3 + time4
+    return f"Redis | Dropped All Keys in {total}ms"
 
 
 if __name__ == '__main__':

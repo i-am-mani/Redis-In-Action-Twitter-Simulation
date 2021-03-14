@@ -4,12 +4,14 @@ import { REMOTE_HOST } from "../App";
 import { toast } from "react-toastify";
 import { ConsoleContext } from "../context/ConsoleContext";
 import { TweetContext } from "../context/TweetsContext";
+import { Statistics } from "../models/GlobalTypes";
 
 export const Actions: React.FC = () => {
   const [userid, setUserid] = React.useState("");
   const { addLogs } = React.useContext(ConsoleContext);
   const { setTweets } = React.useContext(TweetContext);
   const [isLoading, setLoading] = React.useState(false);
+  const [statistics, setStatistics] = React.useState<Statistics>();
 
   const fetchAll = async (fromCache: boolean = false) => {
     try {
@@ -41,13 +43,15 @@ export const Actions: React.FC = () => {
   const deleteDatabase = async () => {
     try {
       setLoading(true);
-      addLogs([`Postgres | Fetch Request Initiated}`]);
+      addLogs([`Postgres | Delete Request Initiated}`]);
       const response = await axios.post(`${REMOTE_HOST}/delete_database`);
       setLoading(false);
       console.log(response);
       const status = response.data["status"];
       if (status === "success") {
-        toast("Successfully Delete Database");
+        const logs = response.data["logs"]
+        addLogs(logs)
+        toast("Successfully Deleted Database");
       }
     } catch (e) {
       console.log(e);
@@ -57,14 +61,16 @@ export const Actions: React.FC = () => {
 
   const deleteCache = async () => {
     try {
-      addLogs([`Redis | Fetch Request Initiated}`]);
+      addLogs([`Redis | Delete Request Initiated}`]);
       setLoading(true);
       const response = await axios.post(`${REMOTE_HOST}/delete_cache`);
       setLoading(false);
       console.log(response);
       const status = response.data["status"];
       if (status === "success") {
-        toast("Successfully Delete Database");
+        const logs = response.data["logs"]
+        addLogs(logs)
+        toast("Successfully Deleted Cache");
       }
     } catch (e) {
       console.log(e);
@@ -80,7 +86,7 @@ export const Actions: React.FC = () => {
       setLoading(true);
       const response = await axios.post(`${REMOTE_HOST}/fetch_userid_tweets`, {
         cacheEnabled: fromCache,
-        userid, 
+        userid,
       });
       setLoading(false);
       console.log(response);
@@ -94,6 +100,32 @@ export const Actions: React.FC = () => {
       toast(
         `Retreived all the user tweets from ${fromCache ? "Redis" : "Postgres"}`
       );
+    } catch (e) {
+      console.log(e);
+      toast.error("Failed to fetch tweets");
+    }
+  };
+
+  const computeStatistics = async (fromCache: boolean = false) => {
+    try {
+      addLogs([
+        `Statistics Request Initiated - ${fromCache ? "Redis" : "Postgres"}`,
+      ]);
+      setLoading(true);
+      const response = await axios.post(`${REMOTE_HOST}/compute_statistics`, {
+        cacheEnabled: fromCache,
+      });
+      setLoading(false);
+      console.log(response);
+      const status = response.data["status"];
+      if (status === "success") {
+        const log = response.data["logs"];
+        const data = response.data["statistics"];
+        setStatistics(data);
+        addLogs(log);
+      }
+      console.log(response);
+      toast(`Retreived statistics from ${fromCache ? "Redis" : "Postgres"}`);
     } catch (e) {
       console.log(e);
       toast.error("Failed to fetch tweets");
@@ -177,15 +209,72 @@ export const Actions: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex justify-center items-center col-span-3 p-3 shadow-lg space-y-3 rounded-lg">
-        <p className="font-bold font-lora tracking-wide cursor-pointer">
-          Compute States
+      <div className="col-span-3 p-3 shadow-lg space-y-3 rounded-lg">
+        <p className="font-bold font-lora tracking-wide text-center">
+          Compute Statistics
         </p>
+
+        <div className="h-3/5 grid grid-cols-2 gap-3">
+          <div
+            className="shadow-md rounded-md flex justify-center items-center text-center p-2 cursor-pointer transform transition-all hover:scale-110"
+            onClick={() => {
+              computeStatistics(false);
+            }}
+          >
+            Database
+          </div>
+          <div
+            className="shadow-md rounded-md flex justify-center items-center text-center p-2 cursor-pointer transform transition-all hover:scale-110"
+            onClick={() => computeStatistics(true)}
+          >
+            Cache
+          </div>
+        </div>
       </div>
+
       {isLoading ? (
         <div className="col-span-full place-self-center">
           <div className="animate-pulse p-3 font-dosis text-dark">
             Processing . . .
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
+
+      {statistics ? (
+        <div className="col-span-full place-self-center shadow p-3">
+          <p className="text-lora font-bold tracking-wider text-center">Statistics</p>
+          <div className="flex space-x-4 justify-center">
+            
+            <div className="inline-flex flex-col shadow-md justify-center items-center p-3 rounded-lg">
+              <span className="text-sm text-gray-400">Highest Retweet</span>
+              <span className="text-dark font-bold text-2xl">
+                {statistics.highest_retweet}
+              </span>
+            </div>
+
+            <div className="inline-flex flex-col shadow-md justify-center items-center p-3 rounded-lg">
+              <span className="text-sm text-gray-400">Total Retweets</span>
+              <span className="text-dark font-bold text-2xl">
+                {statistics.total_retweets}
+              </span>
+            </div>
+
+            <div className="inline-flex flex-col shadow-md justify-center items-center p-3 rounded-lg">
+              <span className="text-sm text-gray-400">Total Likes</span>
+              <span className="text-dark font-bold text-2xl">
+                {statistics.total_likes}
+              </span>
+            </div>
+
+            <div className="inline-flex flex-col shadow-md justify-center items-center p-3 rounded-lg">
+              <span className="text-sm text-gray-400">Total Reach</span>
+              <span className="text-dark font-bold text-2xl">
+                {statistics.total_reach}
+              </span>
+            </div>
+
           </div>
         </div>
       ) : (
