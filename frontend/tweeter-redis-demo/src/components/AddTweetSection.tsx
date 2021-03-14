@@ -101,7 +101,7 @@ export const AddTweetSection: React.FC = () => {
   };
 
   return (
-    <div className="w-full shadow-lg p-6 rounded-xl text-dark">
+    <div className="bg-gray-50 w-full shadow-lg p-6 rounded-xl text-dark">
       <div className="flex justify-center">
         {isLoading ? <div className="spinner" /> : ""}
         <div className="w-full felx-grow inline-flex">

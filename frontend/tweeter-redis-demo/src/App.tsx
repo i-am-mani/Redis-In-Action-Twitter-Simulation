@@ -15,9 +15,9 @@ function App() {
   return (
     <TweetContextProvider>
       <ConsoleContextProvider>
-        <div>
+        <div className="h-full">
           <ToastContainer />
-          <div className="fixed h-full w-3/12 shadow-xl p-6 z-20 overflow-auto">
+          <div className="fixed h-full w-3/12 shadow-3xl p-6 z-20 overflow-auto bg-dark ">
             <Console />
           </div>
 

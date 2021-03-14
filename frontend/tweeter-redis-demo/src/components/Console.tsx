@@ -6,8 +6,8 @@ export const Console: React.FC = () => {
   const { logs, clearLogs } = React.useContext(ConsoleContext);
   console.log(logs);
   return (
-    <div>
-      <p className="inline-flex text-xl font-bold font-lora text-center text-gray-900 mb-6">
+    <div className="">
+      <p className="inline-flex text-xl font-bold font-lora text-center text-white mb-6">
         <div className="w-4 h-4 rounded-full bg-success animate-ping capitalize" />
         Responses Console
         <span
@@ -17,10 +17,11 @@ export const Console: React.FC = () => {
           [clear]
         </span>
       </p>
-      <div className="overflow-auto">
-      {logs.map((msg) => (
-        <ConsoleLog message={msg} />
-      ))}
+      <div className="h-1 bg-lightGold"></div>
+      <div className=" overflow-auto">
+        {logs.map((msg) => (
+          <ConsoleLog message={msg} />
+        ))}
       </div>
     </div>
   );

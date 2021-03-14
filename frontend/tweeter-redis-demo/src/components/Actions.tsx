@@ -49,8 +49,8 @@ export const Actions: React.FC = () => {
       console.log(response);
       const status = response.data["status"];
       if (status === "success") {
-        const logs = response.data["logs"]
-        addLogs(logs)
+        const logs = response.data["logs"];
+        addLogs(logs);
         toast("Successfully Deleted Database");
       }
     } catch (e) {
@@ -68,8 +68,8 @@ export const Actions: React.FC = () => {
       console.log(response);
       const status = response.data["status"];
       if (status === "success") {
-        const logs = response.data["logs"]
-        addLogs(logs)
+        const logs = response.data["logs"];
+        addLogs(logs);
         toast("Successfully Deleted Cache");
       }
     } catch (e) {
@@ -134,7 +134,7 @@ export const Actions: React.FC = () => {
 
   return (
     <div className="my-4 grid grid-cols-12 gap-3 text-dark">
-      <div className="col-span-3 p-3 shadow-lg space-y-3 rounded-lg">
+      <div className="bg-blue-200 col-span-3 p-3 shadow-lg space-y-3 rounded-lg">
         <p className="font-bold font-lora tracking-wide text-center">
           User Tweets
         </p>
@@ -167,18 +167,18 @@ export const Actions: React.FC = () => {
         </div>
       </div>
 
-      <div className="col-span-3 p-3 shadow-lg space-y-3 rounded-lg">
+      <div className="bg-red-100 col-span-3 p-3 shadow-lg space-y-3 rounded-lg">
         <p className="font-bold font-lora tracking-wide text-center">Delete</p>
 
-        <div className="h-3/5 grid grid-cols-2 gap-3">
+        <div className=" h-3/5 grid grid-cols-2 gap-3">
           <div
-            className="shadow-md rounded-md flex justify-center items-center text-center p-2 cursor-pointer transform transition-all hover:scale-110"
+            className="bg-red-400 text-red-50 shadow-md rounded-md flex justify-center items-center text-center p-2 cursor-pointer transform transition-all hover:scale-110"
             onClick={() => deleteDatabase()}
           >
             Database
           </div>
           <div
-            className="shadow-md rounded-md flex justify-center items-center text-center p-2 cursor-pointer transform transition-all hover:scale-110"
+            className="bg-red-400 text-red-50 shadow-md rounded-md flex justify-center items-center text-center p-2 cursor-pointer transform transition-all hover:scale-110"
             onClick={() => deleteCache()}
           >
             Cache
@@ -186,14 +186,14 @@ export const Actions: React.FC = () => {
         </div>
       </div>
 
-      <div className="col-span-3 p-3 shadow-lg space-y-3 rounded-lg">
+      <div className="bg-green-100 col-span-3 p-3 shadow-lg space-y-3 rounded-lg">
         <p className="font-bold font-lora tracking-wide text-center">
           Fetch All Tweets
         </p>
 
         <div className="h-3/5 grid grid-cols-2 gap-3">
           <div
-            className="shadow-md rounded-md flex justify-center items-center text-center p-2 cursor-pointer transform transition-all hover:scale-110"
+            className="bg-green-400 text-green-50 shadow-md rounded-md flex justify-center items-center text-center p-2 cursor-pointer transform transition-all hover:scale-110"
             onClick={() => {
               fetchAll();
             }}
@@ -201,7 +201,7 @@ export const Actions: React.FC = () => {
             Database
           </div>
           <div
-            className="shadow-md rounded-md flex justify-center items-center text-center p-2 cursor-pointer transform transition-all hover:scale-110"
+            className="bg-green-400 text-green-50 shadow-md rounded-md flex justify-center items-center text-center p-2 cursor-pointer transform transition-all hover:scale-110"
             onClick={() => fetchAll(true)}
           >
             Cache
@@ -209,14 +209,14 @@ export const Actions: React.FC = () => {
         </div>
       </div>
 
-      <div className="col-span-3 p-3 shadow-lg space-y-3 rounded-lg">
+      <div className="bg-indigo-100 col-span-3 p-3 shadow-lg space-y-3 rounded-lg">
         <p className="font-bold font-lora tracking-wide text-center">
           Compute Statistics
         </p>
 
         <div className="h-3/5 grid grid-cols-2 gap-3">
           <div
-            className="shadow-md rounded-md flex justify-center items-center text-center p-2 cursor-pointer transform transition-all hover:scale-110"
+            className="bg-indigo-400 text-indigo-50 shadow-md rounded-md flex justify-center items-center text-center p-2 cursor-pointer transform transition-all hover:scale-110"
             onClick={() => {
               computeStatistics(false);
             }}
@@ -224,7 +224,7 @@ export const Actions: React.FC = () => {
             Database
           </div>
           <div
-            className="shadow-md rounded-md flex justify-center items-center text-center p-2 cursor-pointer transform transition-all hover:scale-110"
+            className="bg-indigo-400 text-indigo-50  shadow-md rounded-md flex justify-center items-center text-center p-2 cursor-pointer transform transition-all hover:scale-110"
             onClick={() => computeStatistics(true)}
           >
             Cache
@@ -243,38 +243,38 @@ export const Actions: React.FC = () => {
       )}
 
       {statistics ? (
-        <div className="col-span-full place-self-center shadow p-3">
-          <p className="text-lora font-bold tracking-wider text-center">Statistics</p>
+        <div className="bg-gradient-to-r from-indigo-200 via-red-200 to-yellow-100 rounded-lg col-span-full place-self-center shadow p-3">
+          <p className="text-lora font-bold tracking-wider text-center">
+            Statistics
+          </p>
           <div className="flex space-x-4 justify-center">
-            
-            <div className="inline-flex flex-col shadow-md justify-center items-center p-3 rounded-lg">
-              <span className="text-sm text-gray-400">Highest Retweet</span>
+            <div className="inline-flex flex-col shadow-2xl justify-center items-center p-3 rounded-lg">
+              <span className="text-xs  tracking-wider text-gray-400 font-semibold">Highest Retweet</span>
               <span className="text-dark font-bold text-2xl">
                 {statistics.highest_retweet}
               </span>
             </div>
 
-            <div className="inline-flex flex-col shadow-md justify-center items-center p-3 rounded-lg">
-              <span className="text-sm text-gray-400">Total Retweets</span>
+            <div className="inline-flex flex-col shadow-2xl justify-center items-center p-3 rounded-lg">
+              <span className="text-xs tracking-wider text-gray-400 font-semibold">Total Retweets</span>
               <span className="text-dark font-bold text-2xl">
                 {statistics.total_retweets}
               </span>
             </div>
 
-            <div className="inline-flex flex-col shadow-md justify-center items-center p-3 rounded-lg">
-              <span className="text-sm text-gray-400">Total Likes</span>
+            <div className="inline-flex flex-col shadow-2xl justify-center items-center p-3 rounded-lg">
+              <span className="text-xs tracking-wider text-gray-400 font-semibold">Total Likes</span>
               <span className="text-dark font-bold text-2xl">
                 {statistics.total_likes}
               </span>
             </div>
 
-            <div className="inline-flex flex-col shadow-md justify-center items-center p-3 rounded-lg">
-              <span className="text-sm text-gray-400">Total Reach</span>
+            <div className="inline-flex flex-col shadow-2xl justify-center items-center p-3 rounded-lg">
+              <span className="text-xs tracking-wider text-gray-400 font-semibold">Total Reach</span>
               <span className="text-dark font-bold text-2xl">
                 {statistics.total_reach}
               </span>
             </div>
-
           </div>
         </div>
       ) : (

@@ -24,7 +24,7 @@ export const TweetView: React.FC<{
   const colors = ["red", "yellow", "green", "pink", "indigo"];
   let i = Math.floor(Math.random() * 1000) % 5;
   return (
-    <div className="flex text-dark">
+    <div className="bg-white flex text-dark">
       <div className={`h-full w-2 bg-${colors[i]}-400`}></div>
       <div className="p-2 shadow-lg rounded-lg w-full space-y-4">
         <div className="header flex justify-between">

@@ -6,7 +6,7 @@ export const DisplayTweets: React.FC = () => {
   const { tweets, updateTweet, deleteTweet } = React.useContext(TweetContext);
   console.log(tweets);
   return (
-    <div className="grid grid-cols-1 gap-4">
+    <div className="grid grid-cols-1 gap-4 h-full">
       {tweets.map((tweet) => (
         <TweetView
           tweet={tweet}
