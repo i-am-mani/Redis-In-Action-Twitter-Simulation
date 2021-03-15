@@ -1,6 +1,10 @@
 ## Redis In Action: Twitter Dashboard Simulation
 
+![homepage](https://github.com/llGOKUll/Redis-In-Action-Twitter-Simulation/blob/master/static/home.png)
+
+#### Table Of Content
 - [Redis In Action: Twitter Dashboard Simulation](#redis-in-action-twitter-dashboard-simulation)
+    - [Table Of Content](#table-of-content)
   - [Introduction:](#introduction)
   - [Features:](#features)
     - [Creation:](#creation)
@@ -20,13 +24,24 @@ The Frontend is built using React with Typescript, while Flask (Python) is used 
 ### Features:
 All the database operations for Redis/Postgres are tracked in milliseconds and displayed on the console visible on the front-end.
 
-#### Creation: 
+#### Creation:
 + A Largedataset consisting of 100K Tweets is used as the primary source for adding tweets to the database. This dataset is available in CSV file. 
 
 + Frontend provides both the options to insert CSV tweets by accepting a range of ROWS and an individual tweets with all required parameters.
 
 + In one batch all 100k tweets can be inserted, however this operation is time consuming, consuming about 10-15 mins. This is not due to the database but IO overhead caused by reading from CSV, converting to Python Object then inserting to DB/Cache.
-Inserting a single tweet is trivially fast
+
+![](https://github.com/llGOKUll/Redis-In-Action-Twitter-Simulation/blob/master/static/insert-range.jpeg)
+  
+(Response)
+![alt](https://github.com/llGOKUll/Redis-In-Action-Twitter-Simulation/blob/master/static/insert-range-response.jpeg)
+
++ Inserting a single tweet is trivially fast
+![single tweet insertion](https://github.com/llGOKUll/Redis-In-Action-Twitter-Simulation/blob/master/static/insert-single-tweet.jpeg)
+
+(Response)
+![operation log](https://github.com/llGOKUll/Redis-In-Action-Twitter-Simulation/blob/master/static/single-tweet-response.jpeg)
+
 
 #### Read:
 + User is provided the option to fetch All Tweets or Specific User’s Tweets (By User-Id).
@@ -34,10 +49,15 @@ Inserting a single tweet is trivially fast
 + Along with tweets, it is possible to compute statistics about the data present on the RDBMS, which is an expensive operation, the result is stored in Redis.
 + Statistics shows are: Retweet Count, Most Retweets, Total Reach, Total Number of Likes.
 
+![Fetcha All Tweets](https://github.com/llGOKUll/Redis-In-Action-Twitter-Simulation/blob/master/static/fetch-all.jpeg)
+
+(Statistics)
+![View Statistics](https://github.com/llGOKUll/Redis-In-Action-Twitter-Simulation/blob/master/static/statistics.jpeg)
 
 #### Update:
 + All Tweets are editable. Only the Tweet content can be updated.
 + The update is triggered over the Postgres DB and does not affect the cache.
+![Update Tweet](https://github.com/llGOKUll/Redis-In-Action-Twitter-Simulation/blob/master/static/update-tweet.jpeg)
 
 #### Delete:
 + Tweets can be deleted, individually.
