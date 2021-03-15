@@ -12,6 +12,7 @@
     - [Update:](#update)
     - [Delete:](#delete)
     - [Console:](#console)
+    - [References](#references)
 
 
 ### Introduction:
@@ -68,3 +69,15 @@ All the database operations for Redis/Postgres are tracked in milliseconds and d
 + It includes time consumed for database read/write operations. 
 + It is available for both the redis and postgres.
 + This provides a neat measure to benchmark the Databases by performance and speed
+
+---
+
+#### References
+
+[Redis Documentation]((https://redis.io/documentation))
+[Redis-Py - Python Redis Client](https://github.com/andymccurdy/redis-py)
+[Postgres Documentation](https://www.postgresql.org/docs/)
+[SQL Alchemy Tutorial - Python Central](https://www.pythoncentral.io/sqlalchemy-orm-examples/)
+[SQL Alchemy](https://docs.sqlalchemy.org/en/13/)
+[Flask](https://flask.palletsprojects.com/en/1.1.x/)
+[Flask - SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/)
