@@ -33,25 +33,23 @@ All the database operations for Redis/Postgres are tracked in milliseconds and d
 
 ![](https://github.com/llGOKUll/Redis-In-Action-Twitter-Simulation/blob/master/static/insert-range.jpeg)
   
-(Response)
-![alt](https://github.com/llGOKUll/Redis-In-Action-Twitter-Simulation/blob/master/static/insert-range-response.jpeg)
++ (Response)
+<img src="https://github.com/llGOKUll/Redis-In-Action-Twitter-Simulation/blob/master/static/insert-range-response.jpeg" alt="Insertion Response" height="400">
 
 + Inserting a single tweet is trivially fast
 ![single tweet insertion](https://github.com/llGOKUll/Redis-In-Action-Twitter-Simulation/blob/master/static/insert-single-tweet.jpeg)
 
-(Response)
-![operation log](https://github.com/llGOKUll/Redis-In-Action-Twitter-Simulation/blob/master/static/single-tweet-response.jpeg)
-
++ (Response)
+<img src="https://github.com/llGOKUll/Redis-In-Action-Twitter-Simulation/blob/master/static/single-tweet-response.jpeg" alt="Insertion Response" height="400">
 
 #### Read:
 + User is provided the option to fetch All Tweets or Specific User’s Tweets (By User-Id).
 + A Choice for source is provided to the user. Either Postgres or Redis. Selecting Postgres would invoke Postgres to retrieve tweets from its db. While, selecting Redis would return from cache, which is always faster than fetching from DB, by almost 80% is some cases.
 + Along with tweets, it is possible to compute statistics about the data present on the RDBMS, which is an expensive operation, the result is stored in Redis.
 + Statistics shows are: Retweet Count, Most Retweets, Total Reach, Total Number of Likes.
+![Fetcha All Tweets](https://github.com/llGOKUll/Redis-In-Action-Twitter-Simulation/blob/master/static/fetch_all.jpeg)
 
-![Fetcha All Tweets](https://github.com/llGOKUll/Redis-In-Action-Twitter-Simulation/blob/master/static/fetch-all.jpeg)
-
-(Statistics)
++ (Statistics)
 ![View Statistics](https://github.com/llGOKUll/Redis-In-Action-Twitter-Simulation/blob/master/static/statistics.jpeg)
 
 #### Update:
